@@ -1,0 +1,30 @@
+{% extends 'dashboard_base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+<h2 style="text-align:center; color:blue;">
+    {% if mode == 'edit' %}
+        EDIT CLASS
+    {% else %}
+        ADD CLASS
+    {% endif %}
+</h2>
+<form method="POST" autocomplete="off" style="margin:100px;margin-top: 0px;">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="course_name">Course</label>
+        {% render_field form.name class="form-control" placeholder="class" %}
+
+        <label for="question_number">Description</label>
+        {% render_field form.description class="form-control" placeholder="Description" %}
+    </div>
+    <button type="submit" class="btn btn-primary">
+        {% if mode == 'edit' %}
+            UPDATE
+        {% else %}
+            ADD
+        {% endif %}
+    </button>
+</form>
+<br><br><br>
+{% endblock content %}

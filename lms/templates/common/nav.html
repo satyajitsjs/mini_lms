@@ -1,0 +1,28 @@
+<div class="bs-example">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #000000">
+    <a href="/" class="navbar-brand" style="color: #ffffff; text-decoration: none">
+      <img src="https://tecnologiasparalaeducacion.com/admlogo.jpg" alt="Vidya Bhaban" height="40" />
+      Mini LMS
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+      <div class="navbar-nav ml-auto">
+        <a style="padding-left: 30px" href="/" class="nav-item nav-link active">Home</a>
+        {% if user.is_authenticated %}
+            {% if user.userprofile.role == 'teacher' %}
+                <a href="{% url 'dashboard' %}" class="nav-item nav-link">Teacher Dashboard</a>
+            {% elif user.userprofile.role == 'student' %}
+                <a href="{% url 'student_dashboard' %}" class="nav-item nav-link">Student Dashboard</a>
+            {% endif %}
+            <a href={% url "logout" %} class="nav-item nav-link">Logout</a>
+        {% else %}
+            <a href={% url "teacher_click_view" %} class="nav-item nav-link">Teacher</a>
+            <a href={% url "student_click_view" %} class="nav-item nav-link">Student</a>
+            <a href="/admin" class="nav-item nav-link">Admin</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</div>

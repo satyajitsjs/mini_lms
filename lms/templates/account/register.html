@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<br />
+<br />
+<br />
+<div class="container mt-4">
+    <h3 style="text-align: center;color: red;">{{ role|capfirst }} SignUp</h3>
+    <form method="POST" autocomplete="off">
+        {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+        <label for="username">Username</label>
+        {% render_field form.username|attr:'required:true'  class="form-control" placeholder="username" %}
+        {% if form.username.errors %}
+        <div class="text-danger">{{ form.username.errors }}</div>
+        {% endif %}
+    </div>
+      <div class="form-group col-md-6">
+        <label for="inputPassword4">Password</label>
+        {% render_field form.password1|attr:'required:true'  class="form-control" placeholder="password" %}
+        {% if form.password1.errors %}
+          <div class="text-danger">{{ form.password1.errors }}</div>
+          {% endif %}
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputPassword4">Confirm Password</label>
+        {% render_field form.password2|attr:'required:true'  class="form-control" placeholder="confirm password" %}
+        {% if form.password2.errors %}
+          <div class="text-danger">{{ form.password2.errors }}</div>
+        {% endif %}
+    </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
+</form>
+{% if form.non_field_errors %}
+  <div class="text-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+</div>
+{% endblock %}

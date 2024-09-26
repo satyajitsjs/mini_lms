@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ quiz.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="mb-3">
+            <label>{{ question.text }}</label>
+            <div>
+                <input type="radio" name="question_{{ question.id }}" value="A"> {{ question.option_a }}<br>
+                <input type="radio" name="question_{{ question.id }}" value="B"> {{ question.option_b }}<br>
+                <input type="radio" name="question_{{ question.id }}" value="C"> {{ question.option_c }}<br>
+                <input type="radio" name="question_{{ question.id }}" value="D"> {{ question.option_d }}<br>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+</div>
+{% endblock %}
