@@ -45,7 +45,7 @@ def register_view(request, role):
         if form.is_valid():
             user = form.save()
             UserProfile.objects.create(user=user, role=role)
-            return redirect(reverse('login', kwargs={'role': role}))
+            return redirect('login')
         else:
             print(form.errors)
     else:
