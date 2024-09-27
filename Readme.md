@@ -196,7 +196,7 @@ def view_results(request):
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 ```
 
 This README.md provides a comprehensive overview of your project, including its features, structure, installation steps, usage, and contribution guidelines. Adjust the content as needed to fit your specific project details.
