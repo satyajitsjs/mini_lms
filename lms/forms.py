@@ -19,11 +19,6 @@ class QuizForm(forms.ModelForm):
         model = Quiz
         fields = '__all__'
 
-class EnrollmentForm(forms.ModelForm):
-    class Meta:
-        model = Enrollment
-        fields = ['course']
-
 class QuizSubmissionForm(forms.ModelForm):
     class Meta:
         model = StudentQuizSubmission

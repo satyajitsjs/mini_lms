@@ -38,12 +38,12 @@ class Quiz(models.Model):
 
 class StudentQuizSubmission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'userprofile__role': 'student'})
-    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE,default=None, null=True,blank=True)
     marks_obtained = models.IntegerField()
     submitted_at = models.DateTimeField(auto_now_add=True)
 
-
-class Enrollment(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    enrolled_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        if self.quiz:
+            return f'{self.student.username} - {self.quiz.course.name} - {self.marks_obtained}'
+        else:
+            return f'{self.student.username} - {self.marks_obtained}'

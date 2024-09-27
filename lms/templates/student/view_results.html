@@ -19,8 +19,8 @@
         <tbody>
             {% for submission in submissions %}
             <tr>
-                <td>{{ submission.quiz.course.name }}</td>
-                <td>{{ submission.quiz.question }}</td>
+                <td>{% if submission.quiz.course %}{{ submission.quiz.course.name }}{% else %}Trivia{% endif %}</td>
+                <td>{% if submission.quiz.question %}{{ submission.quiz.question }}{% else %}Trivia{% endif %}</td>
                 <td>{{ submission.marks_obtained }}</td>
                 <td>{{ submission.submitted_at }}</td>
             </tr>

@@ -80,25 +80,4 @@
         <input class="btn btn-info btn-lg" type="submit" value="Submit">
     </form>
 </div>
-
-<script>
-    function saveAns() {
-        var ele = document.getElementsByTagName('input');
-        for (i = 0; i < ele.length; i++) {
-            if (ele[i].type === "radio") {
-                if (ele[i].checked) {
-                    setCookie(ele[i].name, ele[i].value, 3)
-                }
-            }
-        }
-    }
-
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-</script>
-
 {% endblock content %}

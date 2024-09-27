@@ -24,6 +24,9 @@
         <td>{{course.description}}</td>
         
         <td>
+          <a class="btn btn-primary btn-xs" href="{% url 'view_questions' course.id  %}">
+            <span class="glyphicon glyphicon-eye-open"></span>
+          </a>
           <a class="btn btn-dark btn-xs" href="{% url 'edit_course' course.id  %}">
             <span class="glyphicon glyphicon-pencil"></span>
           </a>

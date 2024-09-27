@@ -14,14 +14,10 @@ def index(request):
 
 
 def teacherclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
     return render(request,'teacher/teacherclick.html')
 
 
 def studentclick_view(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
     return render(request,'student/studentclick.html')
 
 
@@ -77,7 +73,7 @@ def dashboard(request):
 def student_dashboard(request):
     if request.user.userprofile.role != 'student':
         return redirect('dashboard')
-    courses = Course.objects.filter(enrollment__student=request.user)
+    courses = Course.objects.all()
     context = {
         'total_course':Course.objects.all().count(),
         'total_question':Quiz.objects.all().count(),
@@ -156,11 +152,17 @@ def submit_answers(request, quiz_id):
                 total_score += 1  # Assuming each trivia question is worth 1 point
 
         # Save the submission
-        submission = StudentQuizSubmission.objects.create(
-            student=request.user,
-            quiz=quiz_questions.first(),  # Assuming only one quiz per course
-            marks_obtained=marks_obtained + total_score,
-        )
+        if quiz_questions:
+            submission = StudentQuizSubmission.objects.create(
+                student=request.user,
+                quiz=quiz_questions.first(),  # Assuming only one quiz per course
+                marks_obtained=marks_obtained + total_score,
+            )
+        else:
+            submission = StudentQuizSubmission.objects.create(
+                student=request.user,
+                marks_obtained=total_score,
+            )
 
         # Redirect to results page
         return redirect('quiz_results', submission_id=submission.id)
@@ -209,6 +211,12 @@ def create_course(request):
     else:
         form = CourseForm()
     return render(request, 'teacher/create_course.html', {'form': form,'mode':'add'})
+
+@login_required(login_url='/login')
+def view_questions(request, id):
+    course = Course.objects.get(id=id)
+    questions = Quiz.objects.filter(course=course)
+    return render(request, 'teacher/view_all_quiz.html', {'quizzes': questions, 'course': course})
 
 @login_required(login_url='/login')
 def edit_course(request, id):

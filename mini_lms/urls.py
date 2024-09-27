@@ -18,6 +18,7 @@ urlpatterns = [
     path('teacher_course/', teacher_course, name='teacher_course'),
     path('view_all_course/', view_all_course, name='view_all_course'),
     path('create_course/', create_course, name='create_course'),
+    path('view_questions/<int:id>/', view_questions, name='view_questions'),
     path('edit_course/<int:id>/', edit_course, name='edit_course'),
     path('delete_course/<int:id>/', delete_course, name='delete_course'),
 
