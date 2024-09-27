@@ -1,4 +1,3 @@
-```markdown
 # Mini LMS
 
 Mini LMS is an online learning management system that allows teachers to create courses and quizzes, and students to enroll in courses and take quizzes. This project is built using Django.
@@ -22,51 +21,47 @@ Mini LMS is an online learning management system that allows teachers to create 
 - Responsive Design
 
 ## Project Structure
+    db.sqlite3 
+    envsmart/ 
+        .gitignore 
+        Lib/ 
+        site-packages/ 
+        pyvenv.cfg 
+        Scripts/ 
+            activate 
+            activate_this.py 
+            activate.bat 
+            activate.fish 
+            activate.nu 
+            activate.ps1 
+            deactivate.bat 
+            django-admin.exe 
+            normalizer.exe 
+            pip-3.11.exe ... 
+    lms/ 
+        init.py 
+        pycache/ 
+        admin.py 
+        apps.py 
+        forms.py 
+        migrations/ ... 
+        models.py 
+        static/ 
+        templates/ 
+        tests.py 
+        utils.py 
+        views.py 
+        manage.py 
+    mini_lms/ 
+        init.py 
+        pycache/ 
+        asgi.py 
+        settings.py 
+        urls.py 
+        wsgi.py 
+    Readme.md 
+    requirements.txt
 
-```
-db.sqlite3
-envsmart/
-	.gitignore
-	Lib/
-		site-packages/
-	pyvenv.cfg
-	Scripts/
-		activate
-		activate_this.py
-		activate.bat
-		activate.fish
-		activate.nu
-		activate.ps1
-		deactivate.bat
-		django-admin.exe
-		normalizer.exe
-		pip-3.11.exe
-		...
-lms/
-	__init__.py
-	__pycache__/
-	admin.py
-	apps.py
-	forms.py
-	migrations/
-		...
-	models.py
-	static/
-	templates/
-	tests.py
-	utils.py
-	views.py
-manage.py
-mini_lms/
-	__init__.py
-	__pycache__/
-	asgi.py
-	settings.py
-	urls.py
-	wsgi.py
-Readme.md
-requirements.txt
-```
 
 ### Key Directories and Files
 
