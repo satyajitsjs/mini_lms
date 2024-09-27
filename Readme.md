@@ -114,11 +114,7 @@ Mini LMS is an online learning management system that allows teachers to create 
    python manage.py migrate
    ```
 
-5
-
-.
-
- **Create a superuser:**
+5. **Create a superuser:**
 
    ```sh
    python manage.py createsuperuser
