@@ -12,26 +12,33 @@
       <table class="table table-hover" id="dev-table">
         <thead>
           <tr>
-  
             <th>Course Name</th>
-            
-            <th>Take Exam</th>
+            {% if type == 'courses' %}
+              <th>Take Exam</th>
+            {% else %}
+              <th>View Results</th>
+            {% endif %}
           </tr>
         </thead>
         {% for course in courses %}
         <tr>
-  
-          <td> {{course.name}}</td>
-          
+          <td>{{ course.name }}</td>
+          {% if type == 'courses' %}
             <td>
-                <a class="btn btn-danger btn-xs" href="{% url 'take_exam' course.id  %}">
-                    <span class="glyphicon glyphicon-circle-arrow-right"></span>
-                </a>
+              <a class="btn btn-danger btn-xs" href="{% url 'take_exam' course.id %}">
+                <span class="glyphicon glyphicon-circle-arrow-right"></span>
+              </a>
             </td>
+          {% else %}
+            <td>
+              <a class="btn btn-danger btn-xs" href="{% url 'view_results' course.id %}">
+                <span class="glyphicon glyphicon-eye-open"></span>
+              </a>
+            </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </table>
     </div>
-  </div>
-
+</div>
 {% endblock %}

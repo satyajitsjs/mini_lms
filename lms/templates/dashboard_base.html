@@ -5,6 +5,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard</title>
+  <link rel="icon" href="{% static 'image/favicon.ico' %}" type="image/x-icon">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
@@ -133,7 +135,6 @@
 
     .content {
       margin-left: 250px;
-      background: url(background.png) no-repeat;
       background-position: center;
       background-size: cover;
       height: 100vh;
@@ -173,7 +174,11 @@
   </header>
   <div class="sidebar">
     <center>
-      <img src="{% static 'image/teacher.png' %}" class="profile_image" alt="">
+      {% if user.userprofile.role == 'teacher' %}
+        <img src="{% static 'image/teacher.png' %}" class="profile_image" alt="">
+      {% else %}
+        <img src="{% static 'image/student.png' %}" class="profile_image" alt="">
+      {% endif %}
       <h4>{{ request.user.username }}</h4>
       <h6 style="color: rgb(255, 255, 255);">{% if user.userprofile.role == 'teacher' %}( Teacher ){% else %}( Student ){% endif %}</h6>
     </center>
@@ -182,9 +187,10 @@
     {% if user.userprofile.role == 'teacher' %}
       <a href={% url "teacher_course" %} ><i class="fas fa-book"></i><span>Courses</span></a>
       <a href={% url "teacher_quiz" %} ><i class="fas fa-question-circle"></i><span>Questions</span></a>
+      <a href={% url "view_all_submission" %} ><i class="fas fa-list-ul"></i><span>Total Submission</span></a>
     {% else %}
       <a href={% url "student_course" %} ><i class="fas fa-book"></i><span>Courses</span></a>
-      {% comment %} <a href={% url "student_quiz" %} ><i class="fas fa-question-circle"></i><span>Quiz</span></a> {% endcomment %}
+      <a href="{% url "student_course" %}?type=result" ><i class="fas fa-file"></i><span>Results</span></a>
     {% endif %}
   </div>
   <!--sidebar end-->

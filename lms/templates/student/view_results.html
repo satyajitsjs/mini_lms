@@ -1,0 +1,32 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+{% include "common/common_link.html" %}
+
+<div class="container mt-4">
+    <div class="panel panel-primary">
+    <div class="panel-heading">
+        <h6 class="panel-title">Quiz Results</h6>
+    </div>
+    <table class="table table-hover" id="dev-table">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Quiz</th>
+                <th>Marks Obtained</th>
+                <th>Submitted At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+            <tr>
+                <td>{{ submission.quiz.course.name }}</td>
+                <td>{{ submission.quiz.question }}</td>
+                <td>{{ submission.marks_obtained }}</td>
+                <td>{{ submission.submitted_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

@@ -32,9 +32,10 @@ urlpatterns = [
     path('take_exam/<int:id>/', take_exam, name='take_exam'),
     path('start_exam/<int:quiz_id>/', start_exam, name='start_exam'),
 
+    path('submit_exam/<int:quiz_id>/', submit_answers, name='submit_answers'),
+    path('quiz_results/<int:submission_id>/', quiz_results, name='quiz_results'),
 
-    # path('create_quiz/', create_quiz, name='create_quiz'),
-    path('take_quiz/<int:quiz_id>/', take_quiz, name='take_quiz'),
-    path('view_marks/', view_marks, name='view_marks'),
-    path('enroll_course/', enroll_course, name='enroll_course'),
+    path('view_all_submission/', view_all_submission, name='view_all_submission'),
+    path('view_results/<int:couse_id>', view_results, name='view_results'),
+
 ]

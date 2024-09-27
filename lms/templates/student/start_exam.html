@@ -15,39 +15,68 @@
     .form-check-input {
         margin-right: 10px;
     }
+    .form-check-input,.form-check-label:hover {
+        cursor: pointer;
+    }
     .form-check-label {
         margin-left: 10px;
     }
 </style>
 
 <div class="jumbotron my-4">
-    <form class="form" autocomplete="off" onsubmit="return saveAns()" action="/student/calculate-marks" method="POST">
-        {% csrf_token %} <!-- Include CSRF token here -->
+    <form class="form" autocomplete="off" onsubmit="return saveAns()" action="{% url "submit_answers" course.id %}" method="POST">
+        {% csrf_token %}
         <h1 style="text-align: center;">{{ course.name }}</h1>
+        
+        {# Quiz Questions #}
         {% for q in quiz %}
-        <h3 class="text-info">{{ forloop.counter }}. {{ q.question }}</h3>
-        <h4 style="text-align: right;">[Marks {{ q.mark }}]</h4>
+            <h3 class="text-info">{{ forloop.counter }}. {{ q.question }}</h3>
+            <h4 style="text-align: right;">[Marks {{ q.mark }}]</h4>
 
-        <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{ q.option_a }}" value="Option_a">
-            <label class="form-check-label" for="{{ q.option_a }}">{{ q.option_a }}</label>
-        </div>
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="quiz_{{ forloop.counter }}" id="quiz_{{ forloop.counter }}_option_a" value="A">
+                <label class="form-check-label" for="quiz_{{ forloop.counter }}_option_a">{{ q.option_a }}</label>
+            </div>
 
-        <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{ q.option_b }}" value="Option_b">
-            <label class="form-check-label" for="{{ q.option_b }}">{{ q.option_b }}</label>
-        </div>
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="quiz_{{ forloop.counter }}" id="quiz_{{ forloop.counter }}_option_b" value="B">
+                <label class="form-check-label" for="quiz_{{ forloop.counter }}_option_b">{{ q.option_b }}</label>
+            </div>
 
-        <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{ q.option_c }}" value="Option_c">
-            <label class="form-check-label" for="{{ q.option_c }}">{{ q.option_c }}</label>
-        </div>
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="quiz_{{ forloop.counter }}" id="quiz_{{ forloop.counter }}_option_c" value="C">
+                <label class="form-check-label" for="quiz_{{ forloop.counter }}_option_c">{{ q.option_c }}</label>
+            </div>
 
-        <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{ q.option_d }}" value="Option_d">
-            <label class="form-check-label" for="{{ q.option_d }}">{{ q.option_d }}</label>
-        </div>
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="quiz_{{ forloop.counter }}" id="quiz_{{ forloop.counter }}_option_d" value="D">
+                <label class="form-check-label" for="quiz_{{ forloop.counter }}_option_d">{{ q.option_d }}</label>
+            </div>
         {% endfor %}
+
+        {# Trivia Questions #}
+        <h2>Trivia Questions</h2>
+        {% for tq in trivia_questions %}
+
+            <h3 class="text-info">{{ forloop.counter }}. {{ tq.question|safe }}</h3>
+            <h4 style="text-align: right;">[Marks 1]</h4>
+
+            {# Correct Answer #}
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="trivia_{{ forloop.counter }}" id="trivia_{{ forloop.counter }}_correct" value="{{ tq.correct_answer }}">
+                <label class="form-check-label" for="trivia_{{ forloop.counter }}_correct">{{ tq.correct_answer }}</label>
+            </div>
+        
+            {# Incorrect Answers #}
+            {% for option in tq.incorrect_answers %}
+            <div class="form-check mx-4">
+                <input class="form-check-input" type="radio" name="trivia_{{ forloop.parentloop.counter }}" id="trivia_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" value="{{ option }}">
+                <label class="form-check-label" for="trivia_{{ forloop.parentloop.counter }}_{{ forloop.counter }}">{{ option }}</label>
+            </div>
+            {% endfor %}
+        {% endfor %}
+        
+
         <input class="btn btn-info btn-lg" type="submit" value="Submit">
     </form>
 </div>

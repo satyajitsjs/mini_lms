@@ -1,0 +1,9 @@
+{% extends "dashboard_base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Quiz Results</h2>
+    <p>Student: {{ submission.student.username }}</p>
+    <p>Quiz: {{ submission.quiz.course.name }}</p>
+    <p>Marks Obtained: {{ submission.marks_obtained }}</p>
+</div>
+{% endblock %}

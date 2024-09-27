@@ -6,7 +6,7 @@ from .models import *
 from .forms import *
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from functools import wraps
+from .utils import fetch_quiz_questions
 
 
 def index(request):
@@ -24,14 +24,6 @@ def studentclick_view(request):
         return HttpResponseRedirect('afterlogin')
     return render(request,'student/studentclick.html')
 
-# def login_required(login_url='/login')(view_func):
-#     @wraps(view_func)
-#     def _wrapped_view(request, *args, **kwargs):
-#         if not request.user.is_authenticated:
-#             role = request.GET.get('role', 'student')  
-#             return redirect(reverse('login', kwargs={'role': role}))
-#         return view_func(request, *args, **kwargs)
-#     return _wrapped_view
 
 def login_view(request):
     if request.method == 'POST':
@@ -100,8 +92,15 @@ def teacher_course(request):
 
 @login_required(login_url='/login')
 def student_course(request):
+    url_type = request.GET.get('type', None)
     courses = Course.objects.all()
-    return render(request, 'student/course_view.html', {'courses': courses})
+    context = {
+        'courses': courses,
+        'type': 'courses'
+    }
+    if url_type == 'result':
+        context['type'] = 'result'
+    return render(request, 'student/course_view.html', context)
 
 @login_required(login_url='/login')
 def take_exam(request, id):
@@ -118,9 +117,80 @@ def take_exam(request, id):
 @login_required(login_url='/login')
 def start_exam(request, quiz_id):
     course = Course.objects.get(id=quiz_id)
-    quiz = Quiz.objects.filter(course=course)
-    return render(request, 'student/start_exam.html', {'quiz': quiz, 'course': course})
+    quiz_questions = Quiz.objects.filter(course=course)
+    
+    trivia_questions = request.session.get('trivia_questions')
 
+    if not trivia_questions:
+        trivia_questions = fetch_quiz_questions()
+        request.session['trivia_questions'] = trivia_questions
+
+    return render(request, 'student/start_exam.html', 
+                  {'quiz': quiz_questions, 
+                   'course': course,
+                   'trivia_questions': trivia_questions })
+
+@login_required(login_url='/login')
+def submit_answers(request, quiz_id):
+    if request.method == "POST":
+        # Fetch the quiz questions
+        quiz_questions = Quiz.objects.filter(course_id=quiz_id)
+        trivia_questions = request.session.get('trivia_questions', [])
+
+        # Initialize scores
+        total_score = 0
+        marks_obtained = 0
+
+        # Calculate score for quiz questions
+        for idx, q in enumerate(quiz_questions, start=1):
+            selected_answer = request.POST.get(f'quiz_{idx}')  # Ensure this matches your input names
+            print(f"Quiz Question ID: {q.id}, Selected Answer: {selected_answer}, Correct Answer: {q.correct_answer}")
+            if selected_answer == q.correct_answer:
+                marks_obtained += q.mark
+
+        # Calculate score for trivia questions
+        for idx, tq in enumerate(trivia_questions, start=1):
+            selected_answer = request.POST.get(f'trivia_{idx}')  # Ensure this matches your input names
+            print(f"Trivia Question Index: {idx}, Selected Answer: {selected_answer}, Correct Answer: {tq['correct_answer']}")
+            if selected_answer == tq['correct_answer']:
+                total_score += 1  # Assuming each trivia question is worth 1 point
+
+        # Save the submission
+        submission = StudentQuizSubmission.objects.create(
+            student=request.user,
+            quiz=quiz_questions.first(),  # Assuming only one quiz per course
+            marks_obtained=marks_obtained + total_score,
+        )
+
+        # Redirect to results page
+        return redirect('quiz_results', submission_id=submission.id)
+
+    # If not POST, redirect back to the exam page or handle error
+    return redirect('start_exam', quiz_id=quiz_id)
+
+@login_required(login_url='/login')
+def quiz_results(request, submission_id):
+    submission = StudentQuizSubmission.objects.get(id=submission_id)
+    return render(request, 'quiz/quiz_results.html', {'submission': submission})
+
+@login_required(login_url='/login')
+def view_all_submission(request):
+    submissions = StudentQuizSubmission.objects.filter(quiz__course__teacher=request.user)
+    return render(request, 'teacher/view_all_submission.html', {'submissions': submissions})
+
+@login_required
+def view_results(request,couse_id):
+    # Fetch the courses the student is enrolled in
+    courses = Course.objects.filter(id=couse_id)
+    
+    # Fetch the quiz submissions for the logged-in student
+    submissions = StudentQuizSubmission.objects.filter(student=request.user)
+    
+    context = {
+        'courses': courses,
+        'submissions': submissions
+    }
+    return render(request, 'student/view_results.html', context)
 
 @login_required(login_url='/login')
 def view_all_course(request):
@@ -196,59 +266,3 @@ def delete_quiz(request, id):
     quiz.delete()
     return redirect('view_all_quiz')
 
-
-@login_required(login_url='/login')
-def take_quiz(request, quiz_id):
-    quiz = Quiz.objects.get(id=quiz_id)
-    questions = Quiz.objects.filter(quiz=quiz)
-    if request.method == 'POST':
-        # Handle form submission and calculate marks
-        marks_obtained = 0
-        for question in questions:
-            selected_option = request.POST.get(f'question_{question.id}')
-            if selected_option == question.correct_answer:
-                marks_obtained += 1
-        StudentQuizSubmission.objects.create(
-            student=request.user,
-            quiz=quiz,
-            marks_obtained=marks_obtained
-        )
-        return redirect('student_dashboard')
-    return render(request, 'student/take_quiz.html', {'quiz': quiz, 'questions': questions})
-
-@login_required(login_url='/login')
-def view_marks(request):
-    submissions = StudentQuizSubmission.objects.filter(student=request.user)
-    return render(request, 'student/view_marks.html', {'submissions': submissions})
-
-@login_required(login_url='/login')
-def enroll_course(request):
-    if request.method == 'POST':
-        form = EnrollmentForm(request.POST)
-        if form.is_valid():
-            enrollment = form.save(commit=False)
-            enrollment.student = request.user
-            enrollment.save()
-            return redirect('student_dashboard')
-    else:
-        form = EnrollmentForm()
-    return render(request, 'student/enroll_course.html', {'form': form})
-
-@login_required(login_url='/login')
-def take_quiz(request, quiz_id):
-    quiz = Quiz.objects.get(id=quiz_id)
-    questions = Quiz.objects.filter(quiz=quiz)
-    if request.method == 'POST':
-        # Handle form submission and calculate marks
-        marks_obtained = 0
-        for question in questions:
-            selected_option = request.POST.get(f'question_{question.id}')
-            if selected_option == question.correct_answer:
-                marks_obtained += 1
-        StudentQuizSubmission.objects.create(
-            student=request.user,
-            quiz=quiz,
-            marks_obtained=marks_obtained
-        )
-        return redirect('student_dashboard')
-    return render(request, 'student/take_quiz.html', {'quiz': quiz, 'questions': questions})
